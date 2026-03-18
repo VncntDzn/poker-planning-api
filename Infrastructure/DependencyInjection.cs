@@ -22,19 +22,11 @@ public static class DependencyInjection
             var postgresOptions = sp
                 .GetRequiredService<IOptions<PostgresOptions>>()
                 .Value;
-
+ 
             options.UseNpgsql(postgresOptions.ConnectionString);
         });
 
 
         return services;
     }
-}
-
-public sealed class PostgresOptions
-{
-    public const string SectionName = "Postgres";
-
-    [Required]
-    public string ConnectionString { get; init; } = string.Empty;
 }
