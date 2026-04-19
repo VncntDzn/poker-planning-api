@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using poker_planning_api.Infrastructure.Persistence;
 
 namespace poker_planning_api.Infrastructure;
 
