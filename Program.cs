@@ -1,4 +1,8 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using poker_planning_api.Features.Authentication.Signup;
 using poker_planning_api.Infrastructure;
+using poker_planning_api.Shared.Password;
 using Scalar.AspNetCore;
 using Serilog;
 
@@ -12,7 +16,33 @@ try
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();
     builder.Services.AddInfrastructure(builder.Configuration);
+    builder.Services.AddControllers();
+    builder.Services.AddScoped<ISignupHandler, SignupHandler>();
+    builder.Services.AddScoped<PasswordHandler>();
+    builder.Services
+        .AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
+                                           ?? throw new InvalidOperationException("Jwt:Key is not configured.")))
+            };
+        });
 
+    builder.Services.AddAuthorization();
+        
 // serilog config.
     builder.Host.UseSerilog((context, services, config) => config.ReadFrom.Configuration(context.Configuration).ReadFrom
         .Services(services).Enrich.FromLogContext());
@@ -38,6 +68,9 @@ try
 
 
     app.UseHttpsRedirection();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
     app.Run();
 }
 catch (Exception e)

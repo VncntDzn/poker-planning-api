@@ -4,3 +4,12 @@ GET {{poker_planning_api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+POST {{poker_planning_api_HostAddress}}/api/auth/signup
+Content-Type: application/json
+{
+  "email": "test@example.com",
+  "password": "P@ssw0rd123",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+

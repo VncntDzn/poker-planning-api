@@ -1,6 +1,6 @@
 namespace poker_planning_api.Features.Rooms.CreateRoom;
 
-public class CreateRoomResponseDto
+public sealed class CreateRoomResponseDto
 {
-    
+    public Guid RoomId { get; init; }
 }
