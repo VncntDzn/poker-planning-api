@@ -1,10 +1,12 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using poker_planning_api.Features.Authentication.Google_Signin;
 using poker_planning_api.Features.Authentication.Signup;
 using poker_planning_api.Infrastructure;
 using poker_planning_api.Shared.Password;
 using Scalar.AspNetCore;
 using Serilog;
+using Serilog.Events;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
@@ -18,6 +20,7 @@ try
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddControllers();
     builder.Services.AddScoped<ISignupHandler, SignupHandler>();
+    builder.Services.AddScoped<IGoogleSigninHandler, GoogleSigninHandler>();
     builder.Services.AddScoped<PasswordHandler>();
     builder.Services
         .AddAuthentication(options =>
@@ -41,12 +44,27 @@ try
             };
         });
 
-    builder.Services.AddAuthorization();
+
         
 // serilog config.
-    builder.Host.UseSerilog((context, services, config) => config.ReadFrom.Configuration(context.Configuration).ReadFrom
-        .Services(services).Enrich.FromLogContext());
-
+    builder.Host.UseSerilog((context, services, config) => config
+        .MinimumLevel.Information()
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .WriteTo.Console());
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("Frontend", policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+    });
+    
+    builder.Services.AddAuthorization();
     var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -66,8 +84,8 @@ try
         };
     });
 
-
     app.UseHttpsRedirection();
+    app.UseCors("Frontend");
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();

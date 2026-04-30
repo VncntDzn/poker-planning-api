@@ -3,20 +3,21 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using poker_planning_api.Features.Authentication.Google_Signin;
 using poker_planning_api.Features.Authentication.Signup;
+using Serilog;
 
 namespace poker_planning_api.Features.Authentication;
 
 [ApiController]
 [Route("api/auth")]
-public class AuthenticationController : ControllerBase
+public  sealed class AuthenticationController : ControllerBase
 {
     private readonly ISignupHandler _signupHandler;
-    private readonly IGoogleSignin _googleSignin;
+    private readonly IGoogleSigninHandler _googleSigninHandler;
 
-    public AuthenticationController(ISignupHandler signupHandler, IGoogleSignin googleSignin)
+    public AuthenticationController(ISignupHandler signupHandler, IGoogleSigninHandler googleSigninHandler)
     {
         _signupHandler = signupHandler;
-        _googleSignin = googleSignin;
+        _googleSigninHandler = googleSigninHandler;
     }
 
     [HttpGet()]
@@ -52,6 +53,8 @@ public class AuthenticationController : ControllerBase
         if (string.IsNullOrWhiteSpace(request.IdToken))
 
             return BadRequest("Missing ID token");
+        
+        Log.Information(request.IdToken);
        
         GoogleJsonWebSignature.Payload payload;
         try
@@ -64,7 +67,7 @@ public class AuthenticationController : ControllerBase
         }
 
 
-        var token = _googleSignin.ValidateGoogleSignin(payload);
+        var token = _googleSigninHandler.ValidateGoogleSignin(payload);
 
         return Ok(new
 
