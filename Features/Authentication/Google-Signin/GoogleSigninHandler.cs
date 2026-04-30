@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace poker_planning_api.Features.Authentication.Google_Signin;
 
-public sealed class GoogleSigninHandler: IGoogleSignin
+public sealed class GoogleSigninHandler: IGoogleSigninHandler
 {
     private readonly IConfiguration _config;
 
@@ -19,9 +19,20 @@ public sealed class GoogleSigninHandler: IGoogleSignin
     public string ValidateGoogleSignin(GoogleJsonWebSignature.Payload payload)
     {
         // 🔒 Validate audience (critical)
-        if (payload.Audience != _config["Authentication:Google:ClientId"]){
-            throw new Exception("Google Signin requires client ID");
+        var googleClientId = _config["Authentication:Google:ClientId"];
+
+        if (string.IsNullOrWhiteSpace(googleClientId))
+        {
+            throw new Exception("Google client ID is not configured");
         }
+
+        var audience = payload.Audience?.ToString();
+
+        if (!string.Equals(audience, googleClientId, StringComparison.Ordinal))
+        {
+            throw new Exception("Invalid Google client ID");
+        }
+
         // Extract identity
         var email = payload.Email;
         var googleId = payload.Subject;
