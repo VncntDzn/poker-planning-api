@@ -53,8 +53,6 @@ public  sealed class AuthenticationController : ControllerBase
         if (string.IsNullOrWhiteSpace(request.IdToken))
 
             return BadRequest("Missing ID token");
-        
-        Log.Information(request.IdToken);
        
         GoogleJsonWebSignature.Payload payload;
         try

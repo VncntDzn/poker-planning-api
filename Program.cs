@@ -43,8 +43,7 @@ try
                                            ?? throw new InvalidOperationException("Jwt:Key is not configured.")))
             };
         });
-
-
+ 
         
 // serilog config.
     builder.Host.UseSerilog((context, services, config) => config
@@ -58,7 +57,7 @@ try
         options.AddPolicy("Frontend", policy =>
         {
             policy
-                .WithOrigins("http://localhost:3000")
+                .WithOrigins(builder.Configuration["Frontend:PokerPlanningClient"])
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
