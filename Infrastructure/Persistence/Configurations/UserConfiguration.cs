@@ -16,5 +16,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.Password).IsRequired();
         builder.Property(x => x.FirstName).IsRequired().HasMaxLength(100);
         builder.Property(x => x.LastName).IsRequired().HasMaxLength(100);
+        builder.Property(x => x.Provider);
+        builder.Property(x => x.ProviderId);
     }
 }

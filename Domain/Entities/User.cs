@@ -7,4 +7,8 @@ public sealed class User:BaseEntity
     public string FirstName { get; set; } =  string.Empty;
     public string LastName { get; set; } =  string.Empty;
     public string Password { get; set; } =  string.Empty;
+    
+    public string Provider { get; set; } =  string.Empty;
+    
+    public string ProviderId { get; set; } = string.Empty;
 }

@@ -1,3 +1,4 @@
+using Google.Apis.Auth;
 using poker_planning_api.Domain.Entities;
 using poker_planning_api.Infrastructure.Persistence;
 using poker_planning_api.Shared.Password;
@@ -31,5 +32,23 @@ public sealed class SignupHandler : ISignupHandler
         await _dbContext.SaveChangesAsync(ct);
 
         return user.Id;
+    }
+
+    public async Task<SignupResponseDto> CreateUserFromGoogleSignin(GoogleJsonWebSignature.Payload payload)
+    {
+
+        var user = new User()
+        {
+            Provider = "Google",
+            ProviderId = payload.Subject, // uid from google signin
+            Email = payload.Email,
+            FirstName = payload.GivenName,
+            LastName = payload.FamilyName,
+            
+        };
+        
+        return new SignupResponseDto{
+            UserId = user.Id
+        };
     }
 }
