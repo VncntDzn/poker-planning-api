@@ -16,6 +16,8 @@ public sealed class AppDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Vote> Votes => Set<Vote>();
     
+    public DbSet<Team> Teams => Set<Team>();
+    public DbSet<TeamMember> TeamMembers => Set<TeamMember>();
     
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

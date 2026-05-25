@@ -8,7 +8,7 @@ public sealed class RoundConfiguration : IEntityTypeConfiguration<Round>
 {
     public void Configure(EntityTypeBuilder<Round> builder)
     {
-        builder.ToTable("Rounds");
+        builder.ToTable("rounds");
 
         // relationships
         builder.HasOne(r => r.Story)

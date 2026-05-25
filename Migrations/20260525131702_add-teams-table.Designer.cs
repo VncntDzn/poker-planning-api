@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using poker_planning_api.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using poker_planning_api.Infrastructure.Persistence;
 namespace poker_planning_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260525131702_add-teams-table")]
+    partial class addteamstable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,34 +166,6 @@ namespace poker_planning_api.Migrations
                     b.ToTable("teams", (string)null);
                 });
 
-            modelBuilder.Entity("poker_planning_api.Domain.Entities.TeamMember", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("TeamId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("TeamId", "UserId")
-                        .IsUnique();
-
-                    b.ToTable("team_members", (string)null);
-                });
-
             modelBuilder.Entity("poker_planning_api.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -315,25 +290,6 @@ namespace poker_planning_api.Migrations
                         .IsRequired();
 
                     b.Navigation("CreatedBy");
-                });
-
-            modelBuilder.Entity("poker_planning_api.Domain.Entities.TeamMember", b =>
-                {
-                    b.HasOne("poker_planning_api.Domain.Entities.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("poker_planning_api.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Team");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("poker_planning_api.Domain.Entities.Vote", b =>

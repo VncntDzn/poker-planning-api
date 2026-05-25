@@ -8,7 +8,7 @@ public sealed class RoomParticipantConfiguration: IEntityTypeConfiguration<RoomP
 {
     public void Configure(EntityTypeBuilder<RoomParticipant> builder)
     {
-        builder.ToTable("RoomParticipants");
+        builder.ToTable("room_participants");
 
         builder.HasKey(rm => rm.Id);
         

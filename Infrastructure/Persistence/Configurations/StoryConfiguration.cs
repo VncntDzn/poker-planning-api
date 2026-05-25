@@ -8,7 +8,7 @@ public sealed class StoryConfiguration:IEntityTypeConfiguration<Story>
 {
     public void Configure(EntityTypeBuilder<Story> builder)
     {
-        builder.ToTable("Stories");
+        builder.ToTable("stories");
         
         builder.HasKey(s => s.Id);
         builder.Property(s => s.Name).IsRequired().HasMaxLength(150);

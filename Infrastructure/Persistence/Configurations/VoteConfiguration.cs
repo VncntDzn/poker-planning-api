@@ -8,7 +8,7 @@ public sealed class VoteConfiguration: IEntityTypeConfiguration<Vote>
 {
     public void Configure(EntityTypeBuilder<Vote> builder)
     {
-        builder.ToTable("Votes");
+        builder.ToTable("votes");
         
         builder.HasKey(v => v.Id);
         builder.Property(v => v.Type).IsRequired();
