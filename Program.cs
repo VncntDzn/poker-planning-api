@@ -2,11 +2,11 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using poker_planning_api.Features.Authentication.Google_Signin;
 using poker_planning_api.Features.Authentication.Signup;
+using poker_planning_api.Features.Rooms.CreateRoom;
 using poker_planning_api.Infrastructure;
 using poker_planning_api.Shared.Password;
 using Scalar.AspNetCore;
 using Serilog;
-using Serilog.Events;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
@@ -22,6 +22,7 @@ try
     builder.Services.AddScoped<ISignupHandler, SignupHandler>();
     builder.Services.AddScoped<IGoogleSigninHandler, GoogleSigninHandler>();
     builder.Services.AddScoped<PasswordHandler>();
+    builder.Services.AddScoped<ICreateRoomHandler, CreateRoomHandler>();
     builder.Services
         .AddAuthentication(options =>
         {
@@ -43,8 +44,8 @@ try
                                            ?? throw new InvalidOperationException("Jwt:Key is not configured.")))
             };
         });
- 
-        
+
+
 // serilog config.
     builder.Host.UseSerilog((context, services, config) => config
         .MinimumLevel.Information()
@@ -59,10 +60,10 @@ try
             policy
                 .WithOrigins(builder.Configuration["Frontend:PokerPlanningClient"])
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod().AllowCredentials();
         });
     });
-    
+
     builder.Services.AddAuthorization();
     var app = builder.Build();
 
@@ -90,9 +91,10 @@ try
     app.MapControllers();
     app.Run();
 }
-catch (Exception e)
+catch (Exception e) when (e.GetType().Name != "HostAbortedException")
 {
     Log.Fatal(e, "Program terminated unexpectedly");
+    throw;
 }
 finally
 {

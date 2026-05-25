@@ -9,7 +9,7 @@ namespace poker_planning_api.Features.Authentication;
 
 [ApiController]
 [Route("api/auth")]
-public  sealed class AuthenticationController : ControllerBase
+public sealed class AuthenticationController : ControllerBase
 {
     private readonly ISignupHandler _signupHandler;
     private readonly IGoogleSigninHandler _googleSigninHandler;
@@ -53,7 +53,7 @@ public  sealed class AuthenticationController : ControllerBase
         if (string.IsNullOrWhiteSpace(request.IdToken))
 
             return BadRequest("Missing ID token");
-       
+
         GoogleJsonWebSignature.Payload payload;
         try
         {
@@ -66,11 +66,19 @@ public  sealed class AuthenticationController : ControllerBase
 
 
         var token = _googleSigninHandler.ValidateGoogleSignin(payload);
+        
+        Response.Cookies.Append("access_token", token,
+            new CookieOptions
 
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddHours(1)
+            });
         return Ok(new
-
         {
-            accessToken = token
+            message = "Authenticated"
         });
     }
 }

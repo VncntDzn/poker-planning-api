@@ -56,7 +56,7 @@ namespace poker_planning_api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Rooms", (string)null);
+                    b.ToTable("rooms", (string)null);
                 });
 
             modelBuilder.Entity("poker_planning_api.Domain.Entities.RoomParticipant", b =>
@@ -78,7 +78,7 @@ namespace poker_planning_api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RoomParticipants", (string)null);
+                    b.ToTable("room_participants", (string)null);
                 });
 
             modelBuilder.Entity("poker_planning_api.Domain.Entities.Round", b =>
@@ -100,7 +100,7 @@ namespace poker_planning_api.Migrations
 
                     b.HasIndex("StoryId");
 
-                    b.ToTable("Rounds", (string)null);
+                    b.ToTable("rounds", (string)null);
                 });
 
             modelBuilder.Entity("poker_planning_api.Domain.Entities.Story", b =>
@@ -134,7 +134,33 @@ namespace poker_planning_api.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("Stories", (string)null);
+                    b.ToTable("stories", (string)null);
+                });
+
+            modelBuilder.Entity("poker_planning_api.Domain.Entities.Team", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.ToTable("teams", (string)null);
                 });
 
             modelBuilder.Entity("poker_planning_api.Domain.Entities.User", b =>
@@ -180,7 +206,7 @@ namespace poker_planning_api.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("poker_planning_api.Domain.Entities.Vote", b =>
@@ -205,7 +231,7 @@ namespace poker_planning_api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Votes", (string)null);
+                    b.ToTable("votes", (string)null);
                 });
 
             modelBuilder.Entity("poker_planning_api.Domain.Entities.Room", b =>
@@ -250,6 +276,17 @@ namespace poker_planning_api.Migrations
                         .IsRequired();
 
                     b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("poker_planning_api.Domain.Entities.Team", b =>
+                {
+                    b.HasOne("poker_planning_api.Domain.Entities.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("poker_planning_api.Domain.Entities.Vote", b =>

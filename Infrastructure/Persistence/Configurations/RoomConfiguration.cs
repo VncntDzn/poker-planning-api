@@ -8,7 +8,7 @@ public sealed class RoomConfiguration : IEntityTypeConfiguration<Room>
 {
     public void Configure(EntityTypeBuilder<Room> builder)
     {
-        builder.ToTable("Rooms");
+        builder.ToTable("rooms");
 
         builder.HasKey(r => r.Id);
         builder.HasIndex(r => r.Slug).IsUnique();
