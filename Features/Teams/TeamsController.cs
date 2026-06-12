@@ -18,10 +18,10 @@ public class TeamsController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> CreateRoom([FromBody] CreateTeamRequestDto requestDto, CancellationToken ct)
+    public async Task<IActionResult> CreateTeam([FromBody] CreateTeamRequestDto requestDto, CancellationToken ct)
     {
         var response = await _createTeamHandler.Create(requestDto, ct);
 
-        return Ok(response);
+        return Created($"/api/teams/{response}", response);
     }
 }

@@ -14,16 +14,20 @@ public sealed class CreateTeamHandler : ICreateTeamHandler
         _dbContext = dbContext;
     }
 
-    public Task<Guid> Create(CreateTeamRequestDto createTeamRequestDto, CancellationToken cancellationToken)
+    public async Task<Guid> Create(CreateTeamRequestDto createTeamRequestDto, CancellationToken cancellationToken)
     {
         var team = new Team()
         {
+            Id = Guid.NewGuid(),
             Name = createTeamRequestDto.Name,
             TeamType = createTeamRequestDto.TeamType,
             TeamLeadUserId = createTeamRequestDto.TeamLeadUserId,
             CreatedByUserId = createTeamRequestDto.CreatedByUserId
         };
 
-        return Task.FromResult(team.Id);
+        _dbContext.Teams.Add(team);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return team.Id;
     }
 }

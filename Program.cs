@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using poker_planning_api.Features.Authentication.Google_Signin;
 using poker_planning_api.Features.Authentication.Signup;
 using poker_planning_api.Features.Rooms.CreateRoom;
+using poker_planning_api.Features.Teams;
+using poker_planning_api.Features.Teams.CreateTeam;
 using poker_planning_api.Infrastructure;
 using poker_planning_api.Shared.Password;
 using Scalar.AspNetCore;
@@ -23,6 +25,7 @@ try
     builder.Services.AddScoped<IGoogleSigninHandler, GoogleSigninHandler>();
     builder.Services.AddScoped<PasswordHandler>();
     builder.Services.AddScoped<ICreateRoomHandler, CreateRoomHandler>();
+    builder.Services.AddScoped<ICreateTeamHandler, CreateTeamHandler>();
     builder.Services
         .AddAuthentication(options =>
         {
