@@ -45,6 +45,14 @@ try
             };
         });
 
+    
+    string[] allowedFrontendOrigins =
+
+        builder.Configuration
+
+            .GetSection("Frontend:AllowedOrigins")
+
+            .Get<string[]>() ?? [];
 
 // serilog config.
     builder.Host.UseSerilog((context, services, config) => config
@@ -58,7 +66,7 @@ try
         options.AddPolicy("Frontend", policy =>
         {
             policy
-                .WithOrigins(builder.Configuration["Frontend:PokerPlanningClient"])
+                .WithOrigins(allowedFrontendOrigins)
                 .AllowAnyHeader()
                 .AllowAnyMethod().AllowCredentials();
         });
